@@ -168,19 +168,29 @@ qrcode.process = function(ctx){
     
     var reader = Decoder.decode(qRCodeMatrix.bits);
     var data = reader.DataByte;
-    var str="";
-    for(var i=0;i<data.length;i++)
-    {
-        for(var j=0;j<data[i].length;j++)
-            str+=String.fromCharCode(data[i][j]);
+    var str = "";
+    for (var i = 0; i < data.length; i++) {
+        //for(var j=0;j<data[i].length;j++)
+        //    str+=String.fromCharCode(data[i][j]);
+        str += qrcode.decodeBinaryValue(data[i]);
     }
-    
+
     var end = new Date().getTime();
     var time = end - start;
     console.log(time);
     
     return qrcode.decode_utf8(str);
     //alert("Time:" + time + " Code: "+str);
+}
+
+qrcode.decodeBinaryValue = function (binaryValue) {
+    var str = "";
+
+    for (var j = 0; j < binaryValue[i].length; j++) {
+        str += String.fromCharCode(binaryValue[j]);
+    }
+
+    return str;
 }
 
 qrcode.getPixel = function(x,y){

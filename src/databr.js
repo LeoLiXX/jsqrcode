@@ -196,7 +196,7 @@ function QRCodeDataBlockReader(blocks,  version,  numErrorCorrectionCode)
 		{
 			var length = dataLength;
 			var intData = 0;
-			var output = new Array();
+			var output = [];
 			
 			do 
 			{
@@ -211,7 +211,8 @@ function QRCodeDataBlockReader(blocks,  version,  numErrorCorrectionCode)
 		{
 			var length = dataLength;
 			var intData = 0;
-			var unicodeString = "";
+            //var unicodeString = "";
+			var output = [];
 			do 
 			{
 				intData = getNextBits(13);
@@ -235,13 +236,16 @@ function QRCodeDataBlockReader(blocks,  version,  numErrorCorrectionCode)
 				//tempByte[0] = (sbyte) (shiftjisWord >> 8);
 				//tempByte[1] = (sbyte) (shiftjisWord & 0xFF);
 				//unicodeString += new String(SystemUtils.ToCharArray(SystemUtils.ToByteArray(tempByte)));
-                unicodeString += String.fromCharCode(shiftjisWord);
+			    //unicodeString += String.fromCharCode(shiftjisWord);
+				output.push((shiftjisWord >> 8) & 0xFF);
+				output.push((shiftjisWord & 0xFF));
+
 				length--;
 			}
 			while (length > 0);
 			
 			
-			return unicodeString;
+			return output;
 		}
 
 	this.__defineGetter__("DataByte", function()

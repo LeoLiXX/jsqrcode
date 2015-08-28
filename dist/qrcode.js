@@ -2406,11 +2406,12 @@ qrcode.process = function(ctx){
     
     var reader = Decoder.decode(qRCodeMatrix.bits);
     var data = reader.DataByte;
-    var str="";
+    var str = "";
     for(var i=0;i<data.length;i++)
     {
-        for(var j=0;j<data[i].length;j++)
-            str+=String.fromCharCode(data[i][j]);
+        //for(var j=0;j<data[i].length;j++)
+        //    str+=String.fromCharCode(data[i][j]);
+        str += qrcode.decodeBinaryValue(data[i]);
     }
     
     var end = new Date().getTime();
@@ -2419,6 +2420,16 @@ qrcode.process = function(ctx){
     
     return qrcode.decode_utf8(str);
     //alert("Time:" + time + " Code: "+str);
+}
+
+qrcode.decodeBinaryValue = function (binaryValue) {
+    var str = "";
+    
+    for (var j = 0; j < binaryValue[i].length; j++) {
+        str += String.fromCharCode(binaryValue[j]);
+    }        
+    
+    return str;
 }
 
 qrcode.getPixel = function(x,y){
@@ -3680,7 +3691,7 @@ function QRCodeDataBlockReader(blocks,  version,  numErrorCorrectionCode)
 		{
 			var length = dataLength;
 			var intData = 0;
-			var output = new Array();
+			var output = [];
 			
 			do 
 			{
@@ -3695,10 +3706,11 @@ function QRCodeDataBlockReader(blocks,  version,  numErrorCorrectionCode)
 		{
 			var length = dataLength;
 			var intData = 0;
-			var unicodeString = "";
+			//var unicodeString = "";
+			var output = [];
 			do 
 			{
-				intData = getNextBits(13);
+				intData = this.getNextBits(13);
 				var lowerByte = intData % 0xC0;
 				var higherByte = intData / 0xC0;
 				
@@ -3719,13 +3731,16 @@ function QRCodeDataBlockReader(blocks,  version,  numErrorCorrectionCode)
 				//tempByte[0] = (sbyte) (shiftjisWord >> 8);
 				//tempByte[1] = (sbyte) (shiftjisWord & 0xFF);
 				//unicodeString += new String(SystemUtils.ToCharArray(SystemUtils.ToByteArray(tempByte)));
-                unicodeString += String.fromCharCode(shiftjisWord);
+			    //unicodeString += String.fromCharCode(shiftjisWord);
+				output.push((shiftjisWord >> 8) & 0xFF);
+				output.push((shiftjisWord & 0xFF));
+
 				length--;
 			}
 			while (length > 0);
 			
 			
-			return unicodeString;
+			return output;
 		}
 
 	this.__defineGetter__("DataByte", function()
